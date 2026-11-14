@@ -1,0 +1,33 @@
+{
+  "name": "fullstack-blog-platform",
+  "version": "1.0.0",
+  "description": "A complete, professional, responsive full-stack Blog Platform with comments, JWT authentication, and MongoDB",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js",
+    "test": "node test/api.test.js",
+    "seed": "node backend/utils/seedData.js"
+  },
+  "keywords": [
+    "blog",
+    "express",
+    "mongodb",
+    "mongoose",
+    "jwt",
+    "bcrypt",
+    "javascript",
+    "fullstack"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.12.1",
+    "morgan": "^1.12.1"
+  }
+}

@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chronicle — Modern Blog Platform</title>
+  <meta name="description" content="A modern, responsive full-stack blogging platform with discussion threads, authentication, and author tools." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Header / Navigation -->
+  <header class="site-header" id="siteHeader">
+    <div class="nav-container">
+      <div class="nav-left">
+        <a href="#" class="brand-logo" id="logoLink">
+          <div class="brand-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+          </div>
+          <span class="brand-text">Chronicle<span class="brand-dot">.</span></span>
+        </a>
+
+        <!-- Global Search Bar in Header -->
+        <div class="header-search">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="headerSearchInput" placeholder="Search stories, topics, tags..." autocomplete="off" />
+          <kbd class="search-kbd">Ctrl K</kbd>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <button class="nav-link active" id="navAllPostsBtn">Explore</button>
+        <button class="nav-link" id="navMyPostsBtn" style="display: none;">My Stories</button>
+      </nav>
+
+      <div class="nav-right">
+        <!-- Theme Toggle -->
+        <button class="icon-btn" id="themeToggleBtn" title="Toggle Theme" aria-label="Toggle Theme">
+          <svg class="theme-icon-dark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <svg class="theme-icon-light" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+
+        <!-- Unauthenticated CTA buttons -->
+        <div class="auth-guest" id="authGuestNav">
+          <button class="btn btn-ghost" id="openLoginBtn">Log in</button>
+          <button class="btn btn-primary" id="openRegisterBtn">Get Started</button>
+        </div>
+
+        <!-- Authenticated Navigation -->
+        <div class="auth-user" id="authUserNav" style="display: none;">
+          <button class="btn btn-primary btn-sm" id="navWritePostBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            <span>Write Story</span>
+          </button>
+
+          <div class="user-menu-wrapper" id="userMenuWrapper">
+            <button class="user-avatar-btn" id="userAvatarBtn" aria-label="Open User Menu">
+              <img src="" alt="Avatar" id="navUserAvatar" class="avatar-img" />
+              <span class="user-name-text" id="navUserName"></span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="dropdown-menu" id="userDropdown">
+              <div class="dropdown-header">
+                <strong id="dropdownFullName"></strong>
+                <span id="dropdownEmail"></span>
+              </div>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item" id="dropdownMyPosts">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                My Published Stories
+              </button>
+              <button class="dropdown-item" id="dropdownWritePost">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                Create New Post
+              </button>
+              <div class="dropdown-divider"></div>
+              <button class="dropdown-item text-danger" id="logoutBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Log Out
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Drawer Toggle Button -->
+        <button class="mobile-toggle-btn" id="mobileMenuBtn" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Overlay -->
+  <div class="mobile-drawer-overlay" id="mobileDrawerOverlay">
+    <div class="mobile-drawer" id="mobileDrawer">
+      <div class="drawer-header">
+        <span class="brand-text">Chronicle<span class="brand-dot">.</span></span>
+        <button class="close-btn" id="closeDrawerBtn">&times;</button>
+      </div>
+      <div class="drawer-body">
+        <div class="drawer-user-info" id="drawerUserInfo" style="display: none;">
+          <img src="" id="drawerUserAvatar" class="avatar-img" alt="User Avatar" />
+          <div>
+            <h4 id="drawerUserName"></h4>
+            <p id="drawerUserEmail"></p>
+          </div>
+        </div>
+        <div class="drawer-links">
+          <button class="drawer-link active" id="drawerExploreBtn">Explore Stories</button>
+          <button class="drawer-link" id="drawerMyPostsBtn" style="display: none;">My Published Stories</button>
+          <button class="drawer-link" id="drawerWriteBtn" style="display: none;">+ Write New Story</button>
+        </div>
+        <div class="drawer-footer">
+          <div id="drawerAuthGuest">
+            <button class="btn btn-primary btn-block mb-2" id="drawerLoginBtn">Log In</button>
+            <button class="btn btn-outline btn-block" id="drawerRegisterBtn">Create Account</button>
+          </div>
+          <button class="btn btn-outline btn-block text-danger" id="drawerLogoutBtn" style="display: none;">Log Out</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container hero-container">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span>The Modern Publishing Platform</span>
+      </div>
+      <h1 class="hero-title">Where ideas take shape and perspectives inspire.</h1>
+      <p class="hero-subtitle">
+        Explore deep technical insights, design thinking, and thoughtful discourse from curious developers, designers, and creators worldwide.
+      </p>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number" id="statsTotalPosts">0</span>
+          <span class="stat-label">Published Stories</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number" id="statsCategories">7</span>
+          <span class="stat-label">Curated Topics</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number" id="statsDiscussions">0</span>
+          <span class="stat-label">Discussions</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content / Dashboard -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Filter & Controls Toolbar -->
+      <section class="controls-section">
+        <!-- Category Filter Pills -->
+        <div class="category-pills-wrapper">
+          <div class="category-pills" id="categoryPills">
+            <button class="pill active" data-category="All">All Topics</button>
+            <button class="pill" data-category="Technology">Technology</button>
+            <button class="pill" data-category="Design">Design</button>
+            <button class="pill" data-category="Programming">Programming</button>
+            <button class="pill" data-category="AI & ML">AI & ML</button>
+            <button class="pill" data-category="DevOps">DevOps</button>
+            <button class="pill" data-category="General">General</button>
+          </div>
+        </div>
+
+        <!-- Secondary Controls Bar: Sort, Active Filter Badges, View Reset -->
+        <div class="filter-bar">
+          <div class="filter-status" id="filterStatusContainer">
+            <span class="posts-count-indicator" id="postsCountIndicator">Showing all stories</span>
+            <div class="active-filter-badge" id="activeFilterBadge" style="display: none;">
+              <span id="activeFilterText"></span>
+              <button id="clearFilterBtn" title="Remove filter">&times;</button>
+            </div>
+          </div>
+
+          <div class="sort-controls">
+            <label for="sortSelect" class="sort-label">Sort by:</label>
+            <div class="custom-select-wrapper">
+              <select id="sortSelect" class="custom-select">
+                <option value="latest">Latest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="most-commented">Most Discussed</option>
+                <option value="title">Alphabetical (A-Z)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Posts Grid -->
+      <section class="posts-section">
+        <!-- Loading Skeleton -->
+        <div class="posts-loading-grid" id="postsLoadingGrid" style="display: none;">
+          <div class="post-card-skeleton"></div>
+          <div class="post-card-skeleton"></div>
+          <div class="post-card-skeleton"></div>
+        </div>
+
+        <!-- Real Posts Grid -->
+        <div class="posts-grid" id="postsGrid">
+          <!-- Dynamically injected post cards -->
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+          <div class="empty-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              <line x1="8" y1="11" x2="14" y2="11"></line>
+            </svg>
+          </div>
+          <h3 class="empty-title">No stories found</h3>
+          <p class="empty-description" id="emptyDescription">
+            We couldn't find any articles matching your search criteria. Try a different query or topic filter.
+          </p>
+          <div class="empty-actions">
+            <button class="btn btn-outline" id="resetFiltersBtn">Reset Filters</button>
+            <button class="btn btn-primary" id="emptyWriteBtn" style="display: none;">Write a Story</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Post Reading Modal / View -->
+  <div class="modal-backdrop" id="postDetailModal" role="dialog" aria-modal="true">
+    <div class="modal-content modal-lg">
+      <div class="modal-header modal-header-sticky">
+        <div class="modal-header-meta">
+          <span class="category-badge" id="modalPostCategory">Technology</span>
+          <span class="modal-read-time" id="modalPostReadTime">3 min read</span>
+        </div>
+        <div class="modal-header-actions">
+          <!-- Author Action Buttons (Edit / Delete) -->
+          <div class="author-actions" id="modalAuthorActions" style="display: none;">
+            <button class="btn btn-outline btn-sm" id="modalEditPostBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+              Edit
+            </button>
+            <button class="btn btn-danger-outline btn-sm" id="modalDeletePostBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Delete
+            </button>
+          </div>
+          <button class="modal-close-btn" id="closePostModalBtn" aria-label="Close dialog">&times;</button>
+        </div>
+      </div>
+
+      <div class="modal-scroll-body">
+        <div class="post-hero-image-wrapper" id="modalPostImageWrapper">
+          <img src="" id="modalPostCover" alt="Cover" class="post-hero-image" />
+        </div>
+
+        <article class="post-article">
+          <h1 class="post-detail-title" id="modalPostTitle"></h1>
+
+          <!-- Author Info Bar -->
+          <div class="post-author-bar">
+            <img src="" id="modalAuthorAvatar" alt="Author Avatar" class="author-avatar-lg" />
+            <div class="post-author-meta">
+              <h4 class="author-name" id="modalAuthorName"></h4>
+              <p class="author-bio" id="modalAuthorBio"></p>
+              <div class="post-date-wrapper">
+                <span class="post-date" id="modalPostDate"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="post-tags-list" id="modalPostTags"></div>
+
+          <!-- Post Content -->
+          <div class="post-content markdown-body" id="modalPostContent"></div>
+        </article>
+
+        <!-- Comments Section -->
+        <section class="comments-section" id="commentsSection">
+          <div class="comments-header">
+            <h3 class="comments-title">
+              Discussion (<span id="modalCommentCount">0</span>)
+            </h3>
+          </div>
+
+          <!-- Add Comment Form (when logged in) -->
+          <div class="comment-form-wrapper" id="commentFormWrapper" style="display: none;">
+            <div class="comment-form-avatar-box">
+              <img src="" id="commentFormAvatar" class="avatar-img" alt="Your Avatar" />
+            </div>
+            <form class="comment-form" id="addCommentForm">
+              <textarea id="commentInput" placeholder="Share your constructive thoughts, feedback, or questions..." rows="3" required maxlength="1000"></textarea>
+              <div class="comment-form-footer">
+                <span class="char-count" id="commentCharCount">0 / 1000</span>
+                <button type="submit" class="btn btn-primary btn-sm" id="submitCommentBtn">Post Comment</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Guest Prompt to Log In for Commenting -->
+          <div class="comment-guest-prompt" id="commentGuestPrompt">
+            <p>Join the conversation! Please log in or create an account to share your thoughts.</p>
+            <div class="guest-prompt-buttons">
+              <button class="btn btn-primary btn-sm" id="promptLoginBtn">Log In</button>
+              <button class="btn btn-outline btn-sm" id="promptRegisterBtn">Sign Up</button>
+            </div>
+          </div>
+
+          <!-- Comments List -->
+          <div class="comments-list" id="commentsList">
+            <!-- Dynamic comments -->
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create / Edit Post Modal -->
+  <div class="modal-backdrop" id="postEditorModal" role="dialog" aria-modal="true">
+    <div class="modal-content modal-md">
+      <div class="modal-header">
+        <h3 class="modal-title" id="postEditorTitle">Create New Story</h3>
+        <button class="modal-close-btn" id="closePostEditorBtn" aria-label="Close dialog">&times;</button>
+      </div>
+      <form id="postEditorForm" class="editor-form">
+        <input type="hidden" id="editorPostId" />
+
+        <div class="form-group">
+          <label for="postTitleInput">Title <span class="required">*</span></label>
+          <input type="text" id="postTitleInput" class="form-control" placeholder="Enter an engaging, descriptive title..." required minlength="3" maxlength="200" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="postCategorySelect">Category <span class="required">*</span></label>
+            <select id="postCategorySelect" class="form-control" required>
+              <option value="Technology">Technology</option>
+              <option value="Design">Design</option>
+              <option value="Programming">Programming</option>
+              <option value="AI & ML">AI & ML</option>
+              <option value="DevOps">DevOps</option>
+              <option value="General">General</option>
+            </select>
+          </div>
+
+          <div class="form-group flex-1">
+            <label for="postTagsInput">Tags (comma separated)</label>
+            <input type="text" id="postTagsInput" class="form-control" placeholder="webdev, javascript, tutorial" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="postCoverInput">Cover Image URL</label>
+          <input type="url" id="postCoverInput" class="form-control" placeholder="https://images.unsplash.com/photo-..." />
+          <div class="preset-images-picker">
+            <span class="preset-label">Quick Presets:</span>
+            <button type="button" class="preset-badge" data-url="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80">Technology</button>
+            <button type="button" class="preset-badge" data-url="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80">Coding</button>
+            <button type="button" class="preset-badge" data-url="https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1200&q=80">Design</button>
+            <button type="button" class="preset-badge" data-url="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80">AI & Brain</button>
+            <button type="button" class="preset-badge" data-url="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=1200&q=80">Minimal Desk</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="postExcerptInput">Summary / Excerpt (optional)</label>
+          <textarea id="postExcerptInput" class="form-control" rows="2" placeholder="Brief 1-2 sentence preview for the card (auto-generated if empty)..." maxlength="300"></textarea>
+        </div>
+
+        <div class="form-group">
+          <div class="editor-tabs-bar">
+            <label for="postContentInput">Content <span class="required">*</span></label>
+            <div class="editor-tabs">
+              <button type="button" class="tab-btn active" id="editorWriteTab">Write</button>
+              <button type="button" class="tab-btn" id="editorPreviewTab">Preview</button>
+            </div>
+          </div>
+          <div id="editorWriteArea">
+            <textarea id="postContentInput" class="form-control font-mono" rows="12" placeholder="Write your story using markdown or plain text...
+# Heading 1
+## Heading 2
+- Bullet point
+**Bold text** and *italic*
+> Notable quotation
+```javascript
+console.log('Clean code!');
+```" required minlength="10"></textarea>
+          </div>
+          <div id="editorPreviewArea" class="markdown-preview markdown-body" style="display: none;"></div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-ghost" id="cancelPostEditorBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="savePostBtn">Publish Story</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Auth Modal (Login / Register) -->
+  <div class="modal-backdrop" id="authModal" role="dialog" aria-modal="true">
+    <div class="modal-content modal-sm">
+      <div class="modal-header">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="authLoginTab">Log In</button>
+          <button class="auth-tab" id="authRegisterTab">Create Account</button>
+        </div>
+        <button class="modal-close-btn" id="closeAuthModalBtn" aria-label="Close dialog">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Quick Demo Switcher -->
+        <div class="demo-accounts-box">
+          <span class="demo-label">⚡ 1-Click Demo Logins:</span>
+          <div class="demo-buttons">
+            <button type="button" class="demo-pill" data-email="alex@example.com" data-pass="password123">Alex (Tech)</button>
+            <button type="button" class="demo-pill" data-email="sophia@example.com" data-pass="password123">Sophia (Design)</button>
+            <button type="button" class="demo-pill" data-email="marcus@example.com" data-pass="password123">Marcus (DevOps)</button>
+          </div>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" class="auth-form">
+          <div class="form-group">
+            <label for="loginEmail">Email Address</label>
+            <input type="email" id="loginEmail" class="form-control" placeholder="name@example.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required />
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="loginSubmitBtn">
+            Sign In to Chronicle
+          </button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" class="auth-form" style="display: none;">
+          <div class="form-group">
+            <label for="regName">Full Name <span class="required">*</span></label>
+            <input type="text" id="regName" class="form-control" placeholder="e.g. Maya Lin" required minlength="2" />
+          </div>
+
+          <div class="form-group">
+            <label for="regEmail">Email Address <span class="required">*</span></label>
+            <input type="email" id="regEmail" class="form-control" placeholder="maya@example.com" required />
+          </div>
+
+          <div class="form-group">
+            <label for="regPassword">Password <span class="required">*</span></label>
+            <input type="password" id="regPassword" class="form-control" placeholder="At least 6 characters" required minlength="6" />
+          </div>
+
+          <div class="form-group">
+            <label for="regBio">Bio (optional)</label>
+            <input type="text" id="regBio" class="form-control" placeholder="Passionate developer, writer, enthusiast..." />
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="registerSubmitBtn">
+            Create Free Account
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-backdrop" id="deleteConfirmModal" role="dialog" aria-modal="true">
+    <div class="modal-content modal-xs">
+      <div class="modal-header">
+        <h4 class="modal-title" id="deleteConfirmTitle">Confirm Deletion</h4>
+        <button class="modal-close-btn" id="closeDeleteConfirmBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="deleteConfirmMessage">Are you sure you want to permanently delete this item? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" id="cancelDeleteBtn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete Permanently</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/comments.js"></script>
+  <script src="js/posts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
